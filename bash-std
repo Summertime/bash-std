@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+:<<'BSD2CL'
+
+BSD 2-Clause License
+
+Copyright (c) 2021 Andrew Charles Henry McMillan [https://summerti.me]
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+BSD2CL
+
+
+array-eq(){ # IN1:ARR, IN2:ARR
+	local -n _BASHSTD_AE_A=$1 _BASHSTD_AE_B=$2
+	local I=${#_BASHSTD_AE_A[@]}
+	if [[ $I -ne ${#_BASHSTD_AE_B[@]} ]]; then
+		return 1
+	fi
+	while (( I-- > 0 )); do
+		if [[ "${_BASHSTD_AE_A[I]}" != "${_BASHSTD_AE_B[I]}" ]]; then
+			return 1
+		fi
+	done
+	return 0
+}
+
+array-concat(){ # OUTPUT:*ARR, INPUT:ARR, ...
+	local -n _BASHSTD_CC_OUTPUT=$1 _BASHSTD_CC_INPUT
+	shift
+	local O=()
+	for _BASHSTD_CC_INPUT in "$@"; do
+		O+=( "${_BASHSTD_CC_INPUT[@]}" )
+	done
+	_BASHSTD_CC_OUTPUT=( "${O[@]}" )
+	return 0
+}
+
+split-str(){ # OUTPUT:*ARR, DELIMITER:STR, INPUT:STR
+	local -n _BASHSTD_SS_OUTPUT=$1
+	local DELIMITER=$2 VALUE=$3
+	_BASHSTD_SS_OUTPUT=()
+	while [[ $VALUE = *"$DELIMITER"* ]]; do
+		_BASHSTD_SS_OUTPUT+=( "${VALUE%%$DELIMITER*}" )
+		VALUE=${VALUE#*$DELIMITER}
+	done
+	_BASHSTD_SS_OUTPUT+=( "$VALUE" )
+	return 0
+}
+

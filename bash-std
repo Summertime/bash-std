@@ -29,15 +29,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BSD2CL
 
+# shellcheck disable=SC2034
+declare -gra BASHSTD_VERSINFO=( 0 1 0 '' alpha )
+
 
 array-eq(){ # IN1:ARR, IN2:ARR
 	local -n _BASHSTD_AE_A=$1 _BASHSTD_AE_B=$2
-	local I=${#_BASHSTD_AE_A[@]}
-	if [[ $I -ne ${#_BASHSTD_AE_B[@]} ]]; then
+	local _BASHSTD_AE_I=${#_BASHSTD_AE_A[@]}
+	if [[ $_BASHSTD_AE_I -ne ${#_BASHSTD_AE_B[@]} ]]; then
 		return 1
 	fi
-	while (( I-- > 0 )); do
-		if [[ "${_BASHSTD_AE_A[I]}" != "${_BASHSTD_AE_B[I]}" ]]; then
+	while (( _BASHSTD_AE_I-- > 0 )); do
+		if [[ "${_BASHSTD_AE_A[_BASHSTD_AE_I]}" != "${_BASHSTD_AE_B[_BASHSTD_AE_I]}" ]]; then
 			return 1
 		fi
 	done
@@ -47,23 +50,23 @@ array-eq(){ # IN1:ARR, IN2:ARR
 array-concat(){ # OUTPUT:*ARR, INPUT:ARR, ...
 	local -n _BASHSTD_CC_OUTPUT=$1 _BASHSTD_CC_INPUT
 	shift
-	local O=()
+	local _BASHSTD_CC_O=()
 	for _BASHSTD_CC_INPUT in "$@"; do
-		O+=( "${_BASHSTD_CC_INPUT[@]}" )
+		_BASHSTD_CC_O+=( "${_BASHSTD_CC_INPUT[@]}" )
 	done
-	_BASHSTD_CC_OUTPUT=( "${O[@]}" )
+	# shellcheck disable=SC2034
+	_BASHSTD_CC_OUTPUT=( "${_BASHSTD_CC_O[@]}" )
 	return 0
 }
 
 split-str(){ # OUTPUT:*ARR, DELIMITER:STR, INPUT:STR
 	local -n _BASHSTD_SS_OUTPUT=$1
-	local DELIMITER=$2 VALUE=$3
+	local _BASHSTD_SS_DELIMITER=$2 _BASHSTD_SS_VALUE=$3
 	_BASHSTD_SS_OUTPUT=()
-	while [[ $VALUE = *"$DELIMITER"* ]]; do
-		_BASHSTD_SS_OUTPUT+=( "${VALUE%%$DELIMITER*}" )
-		VALUE=${VALUE#*$DELIMITER}
+	while [[ $_BASHSTD_SS_VALUE = *"$_BASHSTD_SS_DELIMITER"* ]]; do
+		_BASHSTD_SS_OUTPUT+=( "${_BASHSTD_SS_VALUE%%$_BASHSTD_SS_DELIMITER*}" )
+		_BASHSTD_SS_VALUE=${_BASHSTD_SS_VALUE#*$_BASHSTD_SS_DELIMITER}
 	done
-	_BASHSTD_SS_OUTPUT+=( "$VALUE" )
+	_BASHSTD_SS_OUTPUT+=( "$_BASHSTD_SS_VALUE" )
 	return 0
 }
-
